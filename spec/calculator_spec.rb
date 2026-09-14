@@ -1048,6 +1048,11 @@ describe Dentaku::Calculator do
       calculator.evaluate!('probe(1) > 0 AND probe(2) > 0')
       expect(calculator.memory).not_to have_key(Dentaku::AST::Node::PROBE_CACHE_KEY)
     end
+
+    it 'does not reuse a value settled from a variable a loop shadows' do
+      expect(calculator.evaluate!('ALL(items, i, i > 0 AND flag)', items: [1, -1], i: 5, flag: true)).to eq(false)
+      expect(calculator.evaluate!('REDUCE(items, m, i, m + IF(flag, 0, i), 0)', items: [1, 2], i: 5, flag: false)).to eq(3)
+    end
   end
 
   describe 'aliases' do

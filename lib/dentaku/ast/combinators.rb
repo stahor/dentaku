@@ -36,7 +36,7 @@ module Dentaku
             return settled(context, right.value(context)) if right_deps.empty? && right.pure?
           elsif right_deps.empty? && right.pure?
             right_value = right.value(context)
-            return settled(context, right_value) if decisive?(right_value)
+            return (left.pure? ? settled(context, right_value) : []) if decisive?(right_value)
           end
         rescue Dentaku::Error
           # a probe that raises cannot prune anything; the union below is what
